@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { Link } from 'react-router-dom'
 import {
   Card,
@@ -26,7 +27,10 @@ export function AuthCard({
   children,
 }: Props) {
   return (
-    <main className="flex min-h-svh items-center justify-center bg-muted/30 p-4">
+    <main className="relative flex min-h-svh items-center justify-center bg-muted/30 p-4">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-xl">{title}</CardTitle>

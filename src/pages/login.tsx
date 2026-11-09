@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useLingui } from '@lingui/react/macro'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { AuthCard } from '@/components/auth/auth-card'
@@ -6,12 +7,14 @@ import { TextField } from '@/components/auth/text-field'
 import { Button } from '@/components/ui/button'
 import { FieldError, FieldGroup } from '@/components/ui/field'
 import { login } from '@/lib/auth-api'
-import { loginSchema, type LoginValues } from '@/lib/auth-schemas'
+import { getLoginSchema, type LoginValues } from '@/lib/auth-schemas'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const { i18n, t } = useLingui()
+  const schema = getLoginSchema(i18n)
   const { control, handleSubmit, setError, formState } = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' },
   })
 
@@ -20,25 +23,25 @@ export function LoginPage() {
       await login(values)
       navigate('/')
     } catch {
-      setError('root', { message: 'Invalid email or password' })
+      setError('root', { message: t`Invalid email or password` })
     }
   }
 
   return (
     <AuthCard
-      title="Welcome back"
-      description="Sign in to your account"
-      footerText="Don't have an account?"
+      title={t`Welcome back`}
+      description={t`Sign in to your account`}
+      footerText={t`Don't have an account?`}
       footerLink="/register"
-      footerLabel="Sign up"
+      footerLabel={t`Sign up`}
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FieldGroup>
-          <TextField control={control} name="email" label="Email" type="email" autoComplete="email" />
-          <TextField control={control} name="password" label="Password" type="password" autoComplete="current-password" />
+          <TextField control={control} name="email" label={t`Email`} type="email" autoComplete="email" />
+          <TextField control={control} name="password" label={t`Password`} type="password" autoComplete="current-password" />
           {formState.errors.root && <FieldError errors={[formState.errors.root]} />}
           <Button type="submit" disabled={formState.isSubmitting}>
-            {formState.isSubmitting ? 'Signing in…' : 'Sign in'}
+            {formState.isSubmitting ? t`Signing in…` : t`Sign in`}
           </Button>
         </FieldGroup>
       </form>
