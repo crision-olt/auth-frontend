@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useLingui } from '@lingui/react/macro'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { useRevalidateOnLocale } from '@/hooks/use-revalidate-on-locale'
 import { AuthCard } from '@/components/auth/auth-card'
 import { TextField } from '@/components/auth/text-field'
 import { Button } from '@/components/ui/button'
@@ -13,17 +14,19 @@ export function LoginPage() {
   const navigate = useNavigate()
   const { i18n, t } = useLingui()
   const schema = getLoginSchema(i18n)
-  const { control, handleSubmit, setError, formState } = useForm<LoginValues>({
+  const { control, handleSubmit, setError, trigger, formState } = useForm<LoginValues>({
     resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' },
   })
+
+  useRevalidateOnLocale({ formState, trigger })
 
   const onSubmit = async (values: LoginValues) => {
     try {
       await login(values)
       navigate('/')
     } catch {
-      setError('root', { message: t`Invalid email or password` })
+      setError('root', { type: 'server' })
     }
   }
 
@@ -39,7 +42,7 @@ export function LoginPage() {
         <FieldGroup>
           <TextField control={control} name="email" label={t`Email`} type="email" autoComplete="email" />
           <TextField control={control} name="password" label={t`Password`} type="password" autoComplete="current-password" />
-          {formState.errors.root && <FieldError errors={[formState.errors.root]} />}
+          {formState.errors.root && <FieldError>{t`Invalid email or password`}</FieldError>}
           <Button type="submit" disabled={formState.isSubmitting}>
             {formState.isSubmitting ? t`Signing in…` : t`Sign in`}
           </Button>

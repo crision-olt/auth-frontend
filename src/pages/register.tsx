@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useLingui } from '@lingui/react/macro'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { useRevalidateOnLocale } from '@/hooks/use-revalidate-on-locale'
 import { AuthCard } from '@/components/auth/auth-card'
 import { TextField } from '@/components/auth/text-field'
 import { Button } from '@/components/ui/button'
@@ -13,10 +14,12 @@ export function RegisterPage() {
   const navigate = useNavigate()
   const { i18n, t } = useLingui()
   const schema = getRegisterSchema(i18n)
-  const { control, handleSubmit, setError, formState } = useForm<RegisterValues>({
+  const { control, handleSubmit, setError, trigger, formState } = useForm<RegisterValues>({
     resolver: zodResolver(schema),
     defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   })
+
+  useRevalidateOnLocale({ formState, trigger })
 
   const onSubmit = async (values: RegisterValues) => {
     try {
@@ -27,7 +30,7 @@ export function RegisterPage() {
       })
       navigate('/login')
     } catch {
-      setError('root', { message: t`Could not create the account` })
+      setError('root', { type: 'server' })
     }
   }
 
@@ -45,7 +48,7 @@ export function RegisterPage() {
           <TextField control={control} name="email" label={t`Email`} type="email" autoComplete="email" />
           <TextField control={control} name="password" label={t`Password`} type="password" autoComplete="new-password" />
           <TextField control={control} name="confirmPassword" label={t`Confirm password`} type="password" autoComplete="new-password" />
-          {formState.errors.root && <FieldError errors={[formState.errors.root]} />}
+          {formState.errors.root && <FieldError>{t`Could not create the account`}</FieldError>}
           <Button type="submit" disabled={formState.isSubmitting}>
             {formState.isSubmitting ? t`Creating account…` : t`Create account`}
           </Button>
