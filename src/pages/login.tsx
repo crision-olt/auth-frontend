@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLingui } from '@lingui/react/macro'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useRevalidateOnLocale } from '@/hooks/use-revalidate-on-locale'
 import { AuthCard } from '@/components/auth/auth-card'
 import { TextField } from '@/components/auth/text-field'
@@ -9,10 +9,13 @@ import { Button } from '@/components/ui/button'
 import { FieldError, FieldGroup } from '@/components/ui/field'
 import { login } from '@/lib/auth-api'
 import { getLoginSchema, type LoginValues } from '@/lib/auth-schemas'
+import { getRedirectParam, buildLinkWithRedirect } from '@/lib/redirect'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { i18n, t } = useLingui()
+  const redirect = getRedirectParam(location)
   const schema = getLoginSchema(i18n)
   const { control, handleSubmit, setError, trigger, formState } = useForm<LoginValues>({
     resolver: zodResolver(schema),
@@ -24,7 +27,7 @@ export function LoginPage() {
   const onSubmit = async (values: LoginValues) => {
     try {
       await login(values)
-      navigate('/')
+      navigate(redirect || '/')
     } catch {
       setError('root', { type: 'server' })
     }
@@ -35,7 +38,7 @@ export function LoginPage() {
       title={t`Welcome back`}
       description={t`Sign in to your account`}
       footerText={t`Don't have an account?`}
-      footerLink="/register"
+      footerLink={buildLinkWithRedirect('/register', redirect)}
       footerLabel={t`Sign up`}
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
