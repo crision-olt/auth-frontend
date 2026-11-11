@@ -23,6 +23,9 @@ msgstr "Confirma tu contraseña"
 msgid "Could not create the account"
 msgstr "No se pudo crear la cuenta"
 
+msgid "Could not sign in. Please try again."
+msgstr "No se pudo iniciar sesión. Inténtalo de nuevo."
+
 #: src/pages/register.tsx:53
 msgid "Create account"
 msgstr "Crear cuenta"
@@ -60,14 +63,6 @@ msgstr "Correo electrónico o contraseña incorrectos"
 #: src/components/language-switcher.tsx:19
 msgid "Language"
 msgstr "Idioma"
-
-#: src/pages/register.tsx:47
-msgid "Name"
-msgstr "Nombre"
-
-#: src/lib/auth-schemas.ts:15
-msgid "Name must be at least 2 characters"
-msgstr "El nombre debe tener al menos 2 caracteres"
 
 #: src/pages/login.tsx:44
 #: src/pages/register.tsx:49

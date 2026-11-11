@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLingui } from '@lingui/react/macro'
+import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useRevalidateOnLocale } from '@/hooks/use-revalidate-on-locale'
@@ -17,22 +18,23 @@ export function RegisterPage() {
   const { i18n, t } = useLingui()
   const redirect = getRedirectParam(location)
   const schema = getRegisterSchema(i18n)
+  const registerMutation = useMutation({ mutationFn: registerUser })
   const { control, handleSubmit, setError, trigger, formState } = useForm<RegisterValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { email: '', password: '', confirmPassword: '' },
   })
 
   useRevalidateOnLocale({ formState, trigger })
 
   const onSubmit = async (values: RegisterValues) => {
     try {
-      await registerUser({
-        name: values.name,
+      await registerMutation.mutateAsync({
         email: values.email,
         password: values.password,
       })
       navigate(redirect || '/')
-    } catch {
+    } catch (error) {
+      console.error('Registration request failed', error)
       setError('root', { type: 'server' })
     }
   }
@@ -47,7 +49,6 @@ export function RegisterPage() {
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FieldGroup>
-          <TextField control={control} name="name" label={t`Name`} autoComplete="name" />
           <TextField control={control} name="email" label={t`Email`} type="email" autoComplete="email" />
           <TextField control={control} name="password" label={t`Password`} type="password" autoComplete="new-password" />
           <TextField control={control} name="confirmPassword" label={t`Confirm password`} type="password" autoComplete="new-password" />

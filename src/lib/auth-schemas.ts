@@ -12,7 +12,6 @@ export const getLoginSchema = (i18n: I18n) =>
 export const getRegisterSchema = (i18n: I18n) =>
   z
     .object({
-      name: z.string().trim().min(2, t(i18n)`Name must be at least 2 characters`),
       email: z.email(t(i18n)`Enter a valid email`),
       password: z.string().min(8, t(i18n)`Password must be at least 8 characters`),
       confirmPassword: z.string().min(1, t(i18n)`Confirm your password`),

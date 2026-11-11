@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLingui } from '@lingui/react/macro'
+import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useRevalidateOnLocale } from '@/hooks/use-revalidate-on-locale'
@@ -7,7 +8,7 @@ import { AuthCard } from '@/components/auth/auth-card'
 import { TextField } from '@/components/auth/text-field'
 import { Button } from '@/components/ui/button'
 import { FieldError, FieldGroup } from '@/components/ui/field'
-import { login } from '@/lib/auth-api'
+import { AuthApiError, login } from '@/lib/auth-api'
 import { getLoginSchema, type LoginValues } from '@/lib/auth-schemas'
 import { getRedirectParam, buildLinkWithRedirect } from '@/lib/redirect'
 
@@ -17,6 +18,7 @@ export function LoginPage() {
   const { i18n, t } = useLingui()
   const redirect = getRedirectParam(location)
   const schema = getLoginSchema(i18n)
+  const loginMutation = useMutation({ mutationFn: login })
   const { control, handleSubmit, setError, trigger, formState } = useForm<LoginValues>({
     resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' },
@@ -26,10 +28,15 @@ export function LoginPage() {
 
   const onSubmit = async (values: LoginValues) => {
     try {
-      await login(values)
+      await loginMutation.mutateAsync(values)
       navigate(redirect || '/')
-    } catch {
-      setError('root', { type: 'server' })
+    } catch (error) {
+      if (error instanceof AuthApiError && error.status === 401) {
+        setError('root', { type: 'invalid-credentials' })
+      } else {
+        console.error('Sign-in request failed', error)
+        setError('root', { type: 'server' })
+      }
     }
   }
 
@@ -45,7 +52,13 @@ export function LoginPage() {
         <FieldGroup>
           <TextField control={control} name="email" label={t`Email`} type="email" autoComplete="email" />
           <TextField control={control} name="password" label={t`Password`} type="password" autoComplete="current-password" />
-          {formState.errors.root && <FieldError>{t`Invalid email or password`}</FieldError>}
+          {formState.errors.root && (
+            <FieldError>
+              {formState.errors.root.type === 'invalid-credentials'
+                ? t`Invalid email or password`
+                : t`Could not sign in. Please try again.`}
+            </FieldError>
+          )}
           <Button type="submit" disabled={formState.isSubmitting}>
             {formState.isSubmitting ? t`Signing in…` : t`Sign in`}
           </Button>

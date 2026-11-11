@@ -1,5 +1,19 @@
 # React + TypeScript + Vite
 
+## Auth service
+
+Copy `.env.example` to `.env.local` and set `AUTH_SERVICE_URL` to the browser-accessible
+origin of the auth service, for example `http://localhost:3001`. Vite embeds this value
+at build time; rebuild when it changes. Do not put secrets in it.
+
+Login and registration call `/auth/login` and `/auth/register` with cookies enabled.
+Configure the auth service's `AUTH_FRONTEND_URL` to match this application's origin for
+CORS. The service uses a `SameSite=Lax` cookie, so the applications must be deployed
+on compatible sites for the browser to send the session cookie.
+
+The existing redirect parameter accepts only paths on this frontend's origin; it does
+not redirect to external applications.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:
