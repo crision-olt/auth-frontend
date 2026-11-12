@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { LoginValues } from '@/lib/auth-schemas'
+import { resolveServiceUrl } from '@/lib/http'
 
 const userSchema = z.object({
   id: z.number(),
@@ -19,17 +20,7 @@ export class AuthApiError extends Error {
 
 export function createAuthApi(serviceUrl: string) {
   async function submit(path: string, values: LoginValues) {
-    let baseUrl: URL
-    try {
-      baseUrl = new URL(serviceUrl)
-    } catch {
-      throw new Error('AUTH_SERVICE_URL must be an absolute HTTP(S) URL')
-    }
-    if (baseUrl.protocol !== 'http:' && baseUrl.protocol !== 'https:') {
-      throw new Error('AUTH_SERVICE_URL must be an absolute HTTP(S) URL')
-    }
-
-    const response = await fetch(new URL(path, baseUrl).href, {
+    const response = await fetch(resolveServiceUrl(serviceUrl, path), {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -42,7 +33,21 @@ export function createAuthApi(serviceUrl: string) {
   return {
     login: (values: LoginValues) => submit('/auth/login', values),
     registerUser: (values: LoginValues) => submit('/auth/register', values),
+    async getCurrentUser() {
+      const response = await fetch(resolveServiceUrl(serviceUrl, '/auth/me'), {
+        credentials: 'include',
+      })
+      if (!response.ok) throw new AuthApiError(response.status)
+      return userSchema.parse(await response.json())
+    },
+    async logout() {
+      const response = await fetch(resolveServiceUrl(serviceUrl, '/auth/logout'), {
+        method: 'POST',
+        credentials: 'include',
+      })
+      if (!response.ok) throw new AuthApiError(response.status)
+    },
   }
 }
 
-export const { login, registerUser } = createAuthApi(import.meta.env.AUTH_SERVICE_URL)
+export const { login, registerUser, getCurrentUser, logout } = createAuthApi(import.meta.env.AUTH_SERVICE_URL)

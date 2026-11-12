@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { LoginPage } from '@/pages/login'
+import { ProductsPage } from '@/pages/products'
 import { RegisterPage } from '@/pages/register'
 
 export default function App() {
@@ -7,7 +8,8 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="/products" element={<ProductsPage />} />
+      <Route path="*" element={<Navigate to="/products" replace />} />
     </Routes>
   )
 }

@@ -7,56 +7,106 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
 
-#: src/pages/register.tsx:41
+#: src/components/products/products-filters.tsx:39
+#: src/components/products/products-filters.tsx:67
+#: src/components/products/products-filters.tsx:70
+#: src/components/products/products-filters.tsx:87
+#: src/components/products/products-filters.tsx:90
+msgid "All"
+msgstr "All"
+
+#: src/pages/register.tsx:46
 msgid "Already have an account?"
 msgstr "Already have an account?"
 
-#: src/pages/register.tsx:50
+#: src/components/products/products-filters.tsx:129
+msgid "Availability"
+msgstr "Availability"
+
+#: src/pages/products.tsx:97
+msgid "Browse and filter the product catalog."
+msgstr "Browse and filter the product catalog."
+
+#: src/components/products/products-filters.tsx:59
+#: src/components/products/products-table.tsx:58
+msgid "Category"
+msgstr "Category"
+
+#: src/components/products/products-filters.tsx:148
+msgid "Clear filters"
+msgstr "Clear filters"
+
+#: src/pages/register.tsx:54
 msgid "Confirm password"
 msgstr "Confirm password"
 
-#: src/lib/auth-schemas.ts:18
+#: src/lib/auth-schemas.ts:17
 msgid "Confirm your password"
 msgstr "Confirm your password"
 
-#: src/pages/register.tsx:51
+#: src/pages/register.tsx:55
 msgid "Could not create the account"
 msgstr "Could not create the account"
 
+#: src/pages/products.tsx:121
+msgid "Could not load products. Please try again."
+msgstr "Could not load products. Please try again."
+
+#: src/pages/login.tsx:59
 msgid "Could not sign in. Please try again."
 msgstr "Could not sign in. Please try again."
 
-#: src/pages/register.tsx:53
+#: src/pages/products.tsx:100
+msgid "Could not sign out. Please try again."
+msgstr "Could not sign out. Please try again."
+
+#: src/components/auth/require-auth.tsx:27
+msgid "Could not verify your session."
+msgstr "Could not verify your session."
+
+#: src/pages/register.tsx:57
 msgid "Create account"
 msgstr "Create account"
 
-#: src/pages/register.tsx:39
+#: src/pages/register.tsx:44
 msgid "Create an account"
 msgstr "Create an account"
 
-#: src/pages/register.tsx:53
+#: src/components/products/products-table.tsx:74
+msgid "Created"
+msgstr "Created"
+
+#: src/pages/register.tsx:57
 msgid "Creating account…"
 msgstr "Creating account…"
 
-#: src/pages/login.tsx:37
+#: src/pages/login.tsx:47
 msgid "Don't have an account?"
 msgstr "Don't have an account?"
 
-#: src/pages/login.tsx:43
-#: src/pages/register.tsx:48
+#: src/pages/login.tsx:53
+#: src/pages/register.tsx:52
 msgid "Email"
 msgstr "Email"
 
 #: src/lib/auth-schemas.ts:8
-#: src/lib/auth-schemas.ts:16
+#: src/lib/auth-schemas.ts:15
 msgid "Enter a valid email"
 msgstr "Enter a valid email"
 
-#: src/pages/register.tsx:40
+#: src/components/products/products-filters.tsx:153
+msgid "Enter a valid price range: the minimum cannot exceed the maximum."
+msgstr "Enter a valid price range: the minimum cannot exceed the maximum."
+
+#: src/pages/register.tsx:45
 msgid "Enter your details to get started"
 msgstr "Enter your details to get started"
 
-#: src/pages/login.tsx:45
+#: src/components/products/products-filters.tsx:40
+msgid "In stock"
+msgstr "In stock"
+
+#: src/pages/login.tsx:58
 msgid "Invalid email or password"
 msgstr "Invalid email or password"
 
@@ -64,8 +114,41 @@ msgstr "Invalid email or password"
 msgid "Language"
 msgstr "Language"
 
-#: src/pages/login.tsx:44
-#: src/pages/register.tsx:49
+#: src/components/products/products-filters.tsx:115
+msgid "Max price"
+msgstr "Max price"
+
+#: src/components/products/products-filters.tsx:101
+msgid "Min price"
+msgstr "Min price"
+
+#: src/components/products/products-table.tsx:43
+msgid "Name"
+msgstr "Name"
+
+#: src/components/products/products-filters.tsx:53
+msgid "Name, SKU or description"
+msgstr "Name, SKU or description"
+
+#: src/components/products/products-table.tsx:246
+msgid "Next"
+msgstr "Next"
+
+#: src/components/products/products-table.tsx:189
+msgid "No products found."
+msgstr "No products found."
+
+#: src/components/products/products-filters.tsx:41
+#: src/components/products/products-table.tsx:91
+msgid "Out of stock"
+msgstr "Out of stock"
+
+#: src/components/products/products-table.tsx:230
+msgid "Page {page} of {pageCount}"
+msgstr "Page {page} of {pageCount}"
+
+#: src/pages/login.tsx:54
+#: src/pages/register.tsx:53
 msgid "Password"
 msgstr "Password"
 
@@ -73,31 +156,82 @@ msgstr "Password"
 msgid "Password is required"
 msgstr "Password is required"
 
-#: src/lib/auth-schemas.ts:17
+#: src/lib/auth-schemas.ts:16
 msgid "Password must be at least 8 characters"
 msgstr "Password must be at least 8 characters"
 
-#: src/lib/auth-schemas.ts:22
+#: src/lib/auth-schemas.ts:21
 msgid "Passwords do not match"
 msgstr "Passwords do not match"
 
-#: src/pages/login.tsx:47
-#: src/pages/register.tsx:43
+#: src/components/products/products-table.tsx:238
+msgid "Previous"
+msgstr "Previous"
+
+#: src/components/products/products-table.tsx:66
+msgid "Price"
+msgstr "Price"
+
+#: src/pages/products.tsx:96
+msgid "Products"
+msgstr "Products"
+
+#: src/components/products/products-table.tsx:213
+#: src/components/products/products-table.tsx:218
+msgid "Rows per page"
+msgstr "Rows per page"
+
+#: src/components/products/products-filters.tsx:48
+msgid "Search"
+msgstr "Search"
+
+#: src/components/products/products-table.tsx:209
+msgid "Showing {firstRow}–{lastRow} of {total}"
+msgstr "Showing {firstRow}–{lastRow} of {total}"
+
+#: src/pages/login.tsx:63
+#: src/pages/register.tsx:48
 msgid "Sign in"
 msgstr "Sign in"
 
-#: src/pages/login.tsx:36
+#: src/pages/login.tsx:46
 msgid "Sign in to your account"
 msgstr "Sign in to your account"
 
-#: src/pages/login.tsx:39
+#: src/pages/products.tsx:88
+msgid "Sign out"
+msgstr "Sign out"
+
+#: src/pages/login.tsx:49
 msgid "Sign up"
 msgstr "Sign up"
 
-#: src/pages/login.tsx:47
+#: src/pages/login.tsx:63
 msgid "Signing in…"
 msgstr "Signing in…"
 
-#: src/pages/login.tsx:35
+#: src/components/products/products-table.tsx:54
+msgid "SKU"
+msgstr "SKU"
+
+#: src/components/products/products-table.tsx:70
+msgid "Stock"
+msgstr "Stock"
+
+#: src/pages/products.tsx:83
+msgid "Store"
+msgstr "Store"
+
+#: src/components/products/products-filters.tsx:81
+#: src/components/products/products-table.tsx:62
+msgid "Subcategory"
+msgstr "Subcategory"
+
+#: src/components/auth/require-auth.tsx:29
+#: src/pages/products.tsx:123
+msgid "Try again"
+msgstr "Try again"
+
+#: src/pages/login.tsx:45
 msgid "Welcome back"
 msgstr "Welcome back"
