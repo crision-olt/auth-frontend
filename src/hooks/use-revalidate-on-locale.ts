@@ -18,6 +18,5 @@ export function useRevalidateOnLocale<T extends FieldValues>({
     previous.current = i18n.locale
     const fields = Object.keys(errors).filter((name) => name !== 'root')
     if (fields.length) void trigger(fields as never)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18n.locale])
+  }, [i18n.locale, trigger, errors])
 }
