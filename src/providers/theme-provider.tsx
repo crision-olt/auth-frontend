@@ -1,62 +1,26 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import { THEME_STORAGE_KEY, ThemeContext, type Theme } from './theme-context'
 
-type Theme = 'light' | 'dark'
-
-interface ThemeContextType {
-  theme: Theme
-  toggleTheme: () => void
+function getInitialTheme(): Theme {
+  const stored = localStorage.getItem(THEME_STORAGE_KEY)
+  if (stored === 'light' || stored === 'dark') return stored
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
-
-const THEME_STORAGE_KEY = 'app-theme'
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark')
-  const [mounted, setMounted] = useState(false)
-
-  const applyTheme = useCallback((newTheme: Theme) => {
-    const html = document.documentElement
-    if (newTheme === 'dark') {
-      html.classList.add('dark')
-    } else {
-      html.classList.remove('dark')
-    }
-  }, [])
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {
-    // Read from localStorage on mount
-    const stored = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-
-    const initialTheme = stored || (systemPrefersDark ? 'dark' : 'light')
-    setTheme(initialTheme)
-    applyTheme(initialTheme)
-    setMounted(true)
-  }, [applyTheme])
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+  }, [theme])
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => {
-      const newTheme = prev === 'light' ? 'dark' : 'light'
-      localStorage.setItem(THEME_STORAGE_KEY, newTheme)
-      applyTheme(newTheme)
-      return newTheme
+      const next = prev === 'light' ? 'dark' : 'light'
+      localStorage.setItem(THEME_STORAGE_KEY, next)
+      return next
     })
-  }, [applyTheme])
+  }, [])
 
-  
-
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {mounted && children}
-    </ThemeContext.Provider>
-  )
-}
-
-export function useTheme() {
-  const context = useContext(ThemeContext)
-  if (context === undefined) {
-    throw new Error('useTheme must be used within ThemeProvider')
-  }
-  return context
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>
 }
