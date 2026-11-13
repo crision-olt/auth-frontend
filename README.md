@@ -11,6 +11,10 @@ Configure the auth service's `AUTH_FRONTEND_URL` to match this application's ori
 CORS. The service uses a `SameSite=Lax` cookie, so the applications must be deployed
 on compatible sites for the browser to send the session cookie.
 
+After upgrading the service's product database, use **Manage categories** on the
+products page to create categories and subcategories. Product filters use their IDs
+while displaying their names.
+
 The existing redirect parameter accepts only paths on this frontend's origin; it does
 not redirect to external applications.
 

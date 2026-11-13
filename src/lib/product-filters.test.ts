@@ -17,16 +17,16 @@ describe('product filters', () => {
     expect(
       toProductsQuery({
         search: '  mug ',
-        category: 'Kitchen',
-        subcategory: 'Mugs',
+        category: '1',
+        subcategory: '2',
         minPrice: '0',
         maxPrice: '19.5',
         stock: 'out',
       }),
     ).toEqual({
       search: 'mug',
-      category: 'Kitchen',
-      subcategory: 'Mugs',
+      category: '1',
+      subcategory: '2',
       minPrice: 0,
       maxPrice: 19.5,
       inStock: false,

@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro'
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { PaginationState, SortingState } from '@tanstack/react-table'
 import { useState } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { RequireAuth } from '@/components/auth/require-auth'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { ProductsFilters } from '@/components/products/products-filters'
@@ -95,6 +95,7 @@ function ProductsContent() {
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold tracking-tight">{t`Products`}</h1>
           <p className="text-sm text-muted-foreground">{t`Browse and filter the product catalog.`}</p>
+          <Link className="text-sm underline underline-offset-4" to="/categories">{t`Manage categories`}</Link>
           {logoutMutation.isError && (
             <p role="alert" className="text-sm text-destructive">
               {t`Could not sign out. Please try again.`}
@@ -115,6 +116,10 @@ function ProductsContent() {
             />
           </CardContent>
         </Card>
+
+        {(categories.isError || subcategories.isError) && (
+          <p role="alert" className="text-sm text-destructive">{t`Could not load categories. Please try again.`}</p>
+        )}
 
         {products.isError && (
           <div role="alert" className="flex items-center justify-between gap-4 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">

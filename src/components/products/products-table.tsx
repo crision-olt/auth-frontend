@@ -54,11 +54,13 @@ const columns = columnHelper.columns([
     header: () => <Trans>SKU</Trans>,
     cell: ({ cell }) => <span className="font-mono text-xs">{cell.getValue()}</span>,
   }),
-  columnHelper.accessor('category', {
+  columnHelper.accessor('categoryName', {
+    id: 'category',
     header: () => <Trans>Category</Trans>,
     cell: ({ cell }) => <Badge variant="secondary">{cell.getValue()}</Badge>,
   }),
-  columnHelper.accessor('subcategory', {
+  columnHelper.accessor('subcategoryName', {
+    id: 'subcategory',
     header: () => <Trans>Subcategory</Trans>,
     cell: ({ cell }) => cell.getValue() ?? <span className="text-muted-foreground">—</span>,
   }),

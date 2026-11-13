@@ -6,8 +6,10 @@ const productSchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   sku: z.string(),
-  category: z.string(),
-  subcategory: z.string().nullable(),
+  categoryId: z.number().int().positive(),
+  categoryName: z.string(),
+  subcategoryId: z.number().int().positive().nullable(),
+  subcategoryName: z.string().nullable(),
   price: z.number(),
   stock: z.number(),
   created_at: z.string(),
@@ -20,10 +22,13 @@ const productsPageSchema = z.object({
   pageSize: z.number(),
 })
 
-const categoriesSchema = z.array(z.string())
+const categorySchema = z.object({ id: z.number().int().positive(), name: z.string() })
+const subcategorySchema = categorySchema.extend({ categoryId: z.number().int().positive() })
 
 export type Product = z.infer<typeof productSchema>
 export type ProductsPage = z.infer<typeof productsPageSchema>
+export type Category = z.infer<typeof categorySchema>
+export type Subcategory = z.infer<typeof subcategorySchema>
 
 export const SORTABLE_COLUMNS = ['name', 'sku', 'category', 'subcategory', 'price', 'stock', 'created_at'] as const
 export type SortableColumn = (typeof SORTABLE_COLUMNS)[number]
@@ -58,6 +63,17 @@ export function createProductsApi(serviceUrl: string) {
     return response.json()
   }
 
+  async function post(path: string, body: object) {
+    const response = await fetch(resolveServiceUrl(serviceUrl, path), {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (!response.ok) throw new ProductsApiError(response.status)
+    return response.json()
+  }
+
   return {
     async listProducts(query: ProductsQuery = {}) {
       const params = new URLSearchParams()
@@ -68,13 +84,20 @@ export function createProductsApi(serviceUrl: string) {
       return productsPageSchema.parse(await get(`/products${suffix}`))
     },
     async listCategories() {
-      return categoriesSchema.parse(await get('/products/categories'))
+      return z.array(categorySchema).parse(await get('/products/categories'))
     },
     async listSubcategories(category?: string) {
       const suffix = category ? `?${new URLSearchParams({ category })}` : ''
-      return categoriesSchema.parse(await get(`/products/subcategories${suffix}`))
+      return z.array(subcategorySchema).parse(await get(`/products/subcategories${suffix}`))
+    },
+    async createCategory(name: string) {
+      return categorySchema.parse(await post('/products/categories', { name }))
+    },
+    async createSubcategory(name: string, categoryId: number) {
+      return subcategorySchema.parse(await post('/products/subcategories', { name, categoryId }))
     },
   }
 }
 
-export const { listProducts, listCategories, listSubcategories } = createProductsApi(import.meta.env.AUTH_SERVICE_URL)
+export const { listProducts, listCategories, listSubcategories, createCategory, createSubcategory } =
+  createProductsApi(import.meta.env.AUTH_SERVICE_URL)

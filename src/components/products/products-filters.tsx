@@ -17,13 +17,14 @@ import {
   type ProductFilterValues,
   type StockFilter,
 } from '@/lib/product-filters'
+import type { Category, Subcategory } from '@/lib/products-api'
 
 const ALL = '__all__'
 
 type Props = {
   filters: ProductFilterValues
-  categories: string[]
-  subcategories: string[]
+  categories: Category[]
+  subcategories: Subcategory[]
   onChange: (filters: ProductFilterValues) => void
 }
 
@@ -34,6 +35,11 @@ export function ProductsFilters({ filters, categories, subcategories, onChange }
   const minInvalid = hasInvalidPrice(filters.minPrice)
   const maxInvalid = hasInvalidPrice(filters.maxPrice)
   const orderInvalid = rangeInvalid && !minInvalid && !maxInvalid
+  const subcategoryLabel = (subcategory: Subcategory) => {
+    const category = categories.find((item) => item.id === subcategory.categoryId)
+    return !filters.category && category ? `${subcategory.name} (${category.name})` : subcategory.name
+  }
+  const selectedSubcategory = subcategories.find((subcategory) => String(subcategory.id) === filters.subcategory)
 
   const stockLabels: Record<StockFilter, string> = {
     all: t`All`,
@@ -64,13 +70,13 @@ export function ProductsFilters({ filters, categories, subcategories, onChange }
             }
           >
             <SelectTrigger id="filter-category" className="w-full">
-              <SelectValue>{filters.category || t`All`}</SelectValue>
+              <SelectValue>{categories.find((category) => String(category.id) === filters.category)?.name ?? t`All`}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>{t`All`}</SelectItem>
               {categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
+                <SelectItem key={category.id} value={String(category.id)}>
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -84,13 +90,13 @@ export function ProductsFilters({ filters, categories, subcategories, onChange }
             onValueChange={(value) => update({ subcategory: value === ALL || value === null ? '' : value })}
           >
             <SelectTrigger id="filter-subcategory" className="w-full">
-              <SelectValue>{filters.subcategory || t`All`}</SelectValue>
+              <SelectValue>{selectedSubcategory ? subcategoryLabel(selectedSubcategory) : t`All`}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>{t`All`}</SelectItem>
               {subcategories.map((subcategory) => (
-                <SelectItem key={subcategory} value={subcategory}>
-                  {subcategory}
+                <SelectItem key={subcategory.id} value={String(subcategory.id)}>
+                  {subcategoryLabel(subcategory)}
                 </SelectItem>
               ))}
             </SelectContent>
