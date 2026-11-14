@@ -1,17 +1,15 @@
 import { useLingui } from '@lingui/react/macro'
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import type { PaginationState, SortingState } from '@tanstack/react-table'
 import { useState } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { RequireAuth } from '@/components/auth/require-auth'
-import { LanguageSwitcher } from '@/components/language-switcher'
 import { ProductsFilters } from '@/components/products/products-filters'
 import { ProductsTable } from '@/components/products/products-table'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { StoreLayout } from '@/components/store-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useDebouncedValue } from '@/hooks/use-debounced-value'
-import { logout } from '@/lib/auth-api'
 import { emptyFilters, hasInvalidPriceRange, toProductsQuery, type ProductFilterValues } from '@/lib/product-filters'
 import {
   listCategories,
@@ -27,9 +25,7 @@ const SEARCH_DEBOUNCE_MS = 300
 
 function ProductsContent() {
   const { t } = useLingui()
-  const navigate = useNavigate()
   const location = useLocation()
-  const queryClient = useQueryClient()
 
   const [filters, setFilters] = useState<ProductFilterValues>(emptyFilters)
   const [sorting, setSorting] = useState<SortingState>([{ id: 'created_at', desc: true }])
@@ -62,14 +58,6 @@ function ProductsContent() {
     queryFn: () => listSubcategories(filters.category || undefined),
     retry: false,
   })
-  const logoutMutation = useMutation({
-    mutationFn: logout,
-    onSuccess: () => {
-      queryClient.clear()
-      navigate('/login')
-    },
-  })
-
   const resetPage = () => setPagination((current) => ({ ...current, pageIndex: 0 }))
 
   if (products.error instanceof ProductsApiError && products.error.status === 401) {
@@ -77,30 +65,10 @@ function ProductsContent() {
   }
 
   return (
-    <main className="min-h-svh bg-muted/30">
-      <header className="border-b bg-background">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 p-4 sm:px-6">
-          <span className="font-semibold">{t`Store`}</span>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <LanguageSwitcher />
-            <Button variant="outline" disabled={logoutMutation.isPending} onClick={() => logoutMutation.mutate()}>
-              {t`Sign out`}
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6 p-4 sm:p-6">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold tracking-tight">{t`Products`}</h1>
           <p className="text-sm text-muted-foreground">{t`Browse and filter the product catalog.`}</p>
-          <Link className="text-sm underline underline-offset-4" to="/categories">{t`Manage categories`}</Link>
-          {logoutMutation.isError && (
-            <p role="alert" className="text-sm text-destructive">
-              {t`Could not sign out. Please try again.`}
-            </p>
-          )}
         </div>
 
         <Card>
@@ -143,15 +111,14 @@ function ProductsContent() {
           pagination={pagination}
           onPaginationChange={setPagination}
         />
-      </div>
-    </main>
+    </div>
   )
 }
 
 export function ProductsPage() {
   return (
     <RequireAuth>
-      <ProductsContent />
+      <StoreLayout><ProductsContent /></StoreLayout>
     </RequireAuth>
   )
 }

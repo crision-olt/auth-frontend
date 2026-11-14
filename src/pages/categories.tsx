@@ -1,10 +1,9 @@
 import { useLingui } from '@lingui/react/macro'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { RequireAuth } from '@/components/auth/require-auth'
-import { LanguageSwitcher } from '@/components/language-switcher'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { StoreLayout } from '@/components/store-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -54,16 +53,8 @@ function CategoriesContent() {
   }
 
   return (
-    <main className="min-h-svh bg-muted/30">
-      <header className="border-b bg-background">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 p-4 sm:px-6">
-          <Link to="/products" className="font-semibold">{t`Store`}</Link>
-          <div className="flex items-center gap-2"><ThemeToggle /><LanguageSwitcher /></div>
-        </div>
-      </header>
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6 p-4 sm:p-6">
         <div className="flex flex-col gap-1">
-          <Link to="/products" className="text-sm underline underline-offset-4">{t`Back to products`}</Link>
           <h1 className="text-2xl font-semibold tracking-tight">{t`Manage categories`}</h1>
           <p className="text-sm text-muted-foreground">{t`Create categories and assign subcategories to them.`}</p>
         </div>
@@ -128,11 +119,14 @@ function CategoriesContent() {
             )}
           </CardContent>
         </Card>
-      </div>
-    </main>
+    </div>
   )
 }
 
 export function CategoriesPage() {
-  return <RequireAuth><CategoriesContent /></RequireAuth>
+  return (
+    <RequireAuth>
+      <StoreLayout><CategoriesContent /></StoreLayout>
+    </RequireAuth>
+  )
 }
